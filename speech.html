@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Speech to Text</title>
+    <link rel="stylesheet" href="speech.css">
+    <script src="https://kit.fontawesome.com/a076d05399.js" crossorigin="anonymous"></script>
+</head>
+<body>
+    <div class="container">
+        <h1>🎙️ Live Speech to Text</h1>
+        
+        <div class="language-selector">
+            <label for="languageSelect">🌍 Language:</label>
+            <select id="languageSelect">
+                <option value="en-US">🇺🇸 English (US)</option>
+                <option value="en-GB">🇬🇧 English (UK)</option>
+                <option value="es-ES">🇪🇸 Spanish</option>
+                <option value="fr-FR">🇫🇷 French</option>
+                <option value="de-DE">🇩🇪 German</option>
+                <option value="hi-IN">🇮🇳 Hindi</option>
+                <option value="zh-CN">🇨🇳 Chinese</option>
+                <option value="ja-JP">🇯🇵 Japanese</option>
+            </select>
+        </div>
+
+        <div class="output-box">
+            <p id="output">Your speech will appear here...</p>
+        </div>
+
+        <div class="buttons">
+            <button id="startBtn"><i class="fas fa-microphone"></i> Start Listening</button>
+            <button id="stopBtn"><i class="fas fa-stop-circle"></i> Stop</button>
+            <button id="clearBtn"><i class="fas fa-trash-alt"></i> Clear</button>
+        </div>
+    </div>
+
+    <script src="speech.js"></script>
+</body>
+</html>

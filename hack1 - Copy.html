@@ -1,0 +1,440 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>LED Badge Communicator</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            text-align: center;
+            background-color:  #C4D9FF;
+            
+            background-repeat: no-repeat;
+            background-size: cover
+        }
+        .container {
+            max-width: 600px;
+            margin: 50px auto;
+            background: #e3f2fd;
+            padding: 20px;
+            border-radius: 10px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+        }
+        h1 {
+            font-size: 28px;
+            font-weight: bold;
+            color: #C5BAFF;
+            text-shadow: 0 0 2px #e9e9e9, 0 0 10px #e9e9e9, 0 0 15px #e9e9e9;
+        }
+        input, select {
+            width: 90%;
+            padding: 12px;
+            margin: 10px 0;
+            border: 2px solid #007bff;
+            border-radius: 5px;
+            font-size: 16px; /* Removes default dropdown styles */
+        }
+
+        .controls {
+            display: flex;
+            justify-content: center;
+            gap: 10px;
+            margin: 10px 0;
+        }
+        .button-container {
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: center;
+            gap: 10px;
+        }
+        .card-button {
+            background: white;
+            border: 2px solid #007bff;
+            padding: 15px;
+            border-radius: 10px;
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
+            text-align: center;
+            cursor: pointer;
+            font-size: 16px;
+            font-weight: bold;
+            transition: 0.3s;
+            flex: 1 1 30%;
+        }
+        .card-button:hover {
+            background-color: #007bff;
+            color: white;
+        }
+        .sos-button {
+            background: red;
+            color: white;
+            border: 2px solid red;
+            font-size: 18px;
+            font-weight: bold;
+        }
+        .sos-button:hover {
+            background: darkred;
+        }
+        input[type="range"] {
+            width: 80%;
+        }
+    
+
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>LED BADGE COMMUNICATOR</h1>
+        <input type="text" id="textInput" placeholder="Enter your message...">
+        <select id="languageSelect">
+            <option value="en">English</option>
+            <option value="es">Spanish</option>
+            <option value="fr">French</option>
+            <option value="de">German</option>
+            <option value="zh">Chinese</option>
+            <option value="ja">Japanese</option>
+            <option value="ru">Russian</option>
+            <option value="ar">Arabic</option>
+            <option value="hi">Hindi</option>
+            <option value="pt">Portuguese</option>
+            <option value="it">Italian</option>
+            <option value="ko">Korean</option>
+            <option value="nl">Dutch</option>
+            <option value="tr">Turkish</option>
+            <option value="sv">Swedish</option>
+            <option value="pl">Polish</option>
+            <option value="he">Hebrew</option>
+            <option value="id">Indonesian</option>
+            <option value="th">Thai</option>
+            <option value="vi">Vietnamese</option>
+        </select>
+        
+        <div class="controls">
+            <label>Text Size: <input type="range" id="textSize" value="50" min="10" max="100"></label>
+            <label>Scroll Speed: <input type="range" id="scrollSpeed" value="10" min="1" max="20"></label>
+        </div>
+
+        <select id="presetMessages" onchange="setPresetMessage()">
+            <option value="">Select an emergency message...</option>
+            <option value="can't hear! please allert me with light or touch"></option>
+            <option value="I need help!">I need help!</option>
+            <option value="Emergency! Call 911!">Emergency! Call 911!</option>
+            <option value="I am deaf. Please write down what you are saying.">I am deaf. Please write down what you are saying.</option>
+            <option value="I need medical assistance!">I need medical assistance!</option>
+            <option value="Please call my emergency contact.">Please call my emergency contact.</option>
+            <option value="I am lost. Can you assist me?">I am lost. Can you assist me?</option>
+            <option value="I am feeling unwell.">I am feeling unwell.</option>
+            <option value="Please communicate using text.">Please communicate using text.</option>
+        </select>
+<br/>
+        <div class="card-button" onclick="navigateToGestureRecognition()">Gesture Recognition</div>
+<br/>
+        
+        <div class="button-container">
+            <div class="card-button" onclick="openLedDisplay()">Show on LED</div>
+            <div class="card-button" onclick="speakText()">Speak</div>
+            <div class="card-button" onclick="stopSpeech()">Stop Speech</div>
+            <div class="card-button" onclick="startVoiceRecognition()">Voice Input</div>
+            <div class="card-button" onclick="translateText()">Translate</div>
+            <div class="card-button" onclick="clearMessage()">Clear Message</div>
+            <div class="sos-button" onclick="triggerSOS()">🚨 SOS Emergency</div>
+        </div>
+    </div>
+    <script>
+        let speechInstance;
+        function openLedDisplay() {
+            const text = document.getElementById("textInput").value || "Welcome!";
+            const textSize = document.getElementById("textSize").value;
+            const scrollSpeed = document.getElementById("scrollSpeed").value;
+            const ledWindow = window.open("", "LED Display", "width=800,height=200");
+            ledWindow.document.body.innerHTML = `
+                <html>
+                <head>
+                    <title>LED Display</title>
+                    <style>
+                        body { background-color: black; display: flex; align-items: center; justify-content: center; height: 100vh; overflow: hidden; }
+                        .led-text { font-size: ${textSize}px; font-family: 'Courier New', monospace; color: red; text-shadow: 0 0 5px red, 0 0 10px red; white-space: nowrap; }
+                    </style>
+                </head>
+                <body>
+                    <marquee behavior="scroll" direction="left" scrollamount="${scrollSpeed}">
+                        <span class="led-text">${text}</span>
+                    </marquee>
+                </body>
+                </html>
+            `;
+        }
+
+        function setPresetMessage() {
+            const presetMessage = document.getElementById("presetMessages").value;
+            document.getElementById("textInput").value = presetMessage;
+        }
+
+
+        function navigateToGestureRecognition() {
+            window.location.href = "gesture.html";
+        }
+
+
+
+
+        function speakText() {
+            const message = document.getElementById("textInput").value.trim();
+            if (message) {
+                speechInstance = new SpeechSynthesisUtterance(message);
+                speechInstance.lang = document.getElementById("languageSelect").value;
+                window.speechSynthesis.speak(speechInstance);
+            } else {
+                alert("Please enter a message first.");
+            }
+        }
+
+        function stopSpeech() {
+            window.speechSynthesis.cancel();
+        }
+
+        function startVoiceRecognition() {
+            const recognition = new (window.SpeechRecognition || window.webkitSpeechRecognition)();
+            recognition.lang = document.getElementById("languageSelect").value;
+            recognition.start();
+            recognition.onresult = (event) => {
+                document.getElementById("textInput").value = event.results[0][0].transcript;
+            };
+            recognition.onerror = () => {
+                alert("Voice recognition failed. Please try again.");
+            };
+        }
+
+        function translateText() {
+            const message = document.getElementById("textInput").value.trim();
+            const targetLang = document.getElementById("languageSelect").value;
+            if (message) {
+                fetch(`https://api.mymemory.translated.net/get?q=${encodeURIComponent(message)}&langpair=en|${targetLang}`)
+                    .then(response => response.json())
+                    .then(data => {
+                        document.getElementById("textInput").value = data.responseData.translatedText;
+                    })
+                    .catch(() => alert("Translation failed. Please try again."));
+            } else {
+                alert("Please enter a message first.");
+            }
+        }
+
+        function clearMessage() {
+            document.getElementById("textInput").value = "";
+        }
+        function loadGestureMessage() {
+    const savedMessage = localStorage.getItem("ledMessage");
+    if (savedMessage) {
+        document.getElementById("ledMessage").value = savedMessage;
+        showOnLed();
+    }
+}
+
+window.onload = loadGestureMessage;
+function triggerSOS() {
+            document.getElementById("textInput").value = "HELP! SOS!";
+
+            if ("geolocation" in navigator) {
+                navigator.geolocation.getCurrentPosition((position) => {
+                    const lat = position.coords.latitude;
+                    const lon = position.coords.longitude;
+                    alert(`SOS Activated! Location: https://www.google.com/maps?q=${lat},${lon}`);
+                }, () => {
+                    alert("Unable to fetch location. Please check GPS settings.");
+                });
+            } else {
+                alert("Geolocation is not supported by your browser.");
+            }
+        }    
+    </script>
+</body>
+</html>
+<!-- <!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>LED Badge Communicator</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            text-align: center;
+            background-color: #e3f2fd;
+            background-image: url('photo.jpeg');
+            background-repeat: no-repeat;
+            background-size: cover;
+        }
+        .container {
+            max-width: 500px;
+            margin: 50px auto;
+            background: white;
+            padding: 20px;
+            border-radius: 10px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+        }
+        h1 {
+            font-size: 28px;
+            font-weight: bold;
+            color: #007bff;
+            text-shadow: 0 0 2px #007bff, 0 0 10px #007bff, 0 0 15px #007bff;
+        }
+        input, select {
+            width: 90%;
+            padding: 12px;
+            margin: 10px 0;
+            border: 2px solid #007bff;
+            border-radius: 5px;
+            font-size: 16px;
+        }
+        .controls {
+            display: flex;
+            justify-content: center;
+            gap: 10px;
+            margin: 10px 0;
+        }
+        .button-container {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 10px;
+            margin-top: 10px;
+        }
+        .card-button {
+            background: white;
+            border: 2px solid #007bff;
+            padding: 15px;
+            border-radius: 10px;
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
+            text-align: center;
+            cursor: pointer;
+            font-size: 16px;
+            font-weight: bold;
+            transition: 0.3s;
+        }
+        .card-button:hover {
+            background-color: #007bff;
+            color: white;
+        }
+        /* 🚨 SOS Button Styling */
+        .sos-button {
+            background: red;
+            color: white;
+            border: 2px solid red;
+            font-size: 18px;
+            font-weight: bold;
+        }
+        .sos-button:hover {
+            background: darkred;
+        }
+        input[type="range"] {
+            width: 80%;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>LED BADGE COMMUNICATOR</h1>
+        <input type="text" id="textInput" placeholder="Enter your message...">
+        <select id="languageSelect">
+            <option value="en">English</option>
+            <option value="es">Spanish</option>
+            <option value="fr">French</option>
+            <option value="de">German</option>
+            <option value="zh">Chinese</option>
+            <option value="ja">Japanese</option>
+            <option value="ru">Russian</option>
+        </select>
+        
+        <div class="controls">
+            <label>Text Size: <input type="range" id="textSize" value="50" min="10" max="100"></label>
+            <label>Scroll Speed: <input type="range" id="scrollSpeed" value="10" min="1" max="20"></label>
+        </div>
+
+        <div class="button-container">
+            <div class="card-button" onclick="openLedDisplay()">Show on LED</div>
+            <div class="card-button" onclick="speakText()">Speak</div>
+            <div class="card-button" onclick="stopSpeech()">Stop Speech</div>
+            <div class="card-button" onclick="startVoiceRecognition()">Voice Input</div>
+            <div class="card-button" onclick="translateText()">Translate</div>
+            <div class="card-button" onclick="clearMessage()">Clear Message</div>
+            <div class="sos-button" onclick="triggerSOS()">🚨 SOS Emergency</div>
+        </div>
+    </div>
+
+    <script>
+        function openLedDisplay() {
+            const text = document.getElementById("textInput").value || "Welcome!";
+            const textSize = document.getElementById("textSize").value;
+            const scrollSpeed = document.getElementById("scrollSpeed").value;
+            const ledWindow = window.open("", "LED Display", "width=800,height=200");
+            ledWindow.document.body.innerHTML = `
+                <html>
+                <head>
+                    <title>LED Display</title>
+                    <style>
+                        body { background-color: black; display: flex; align-items: center; justify-content: center; height: 100vh; overflow: hidden; }
+                        .led-text { font-size: ${textSize}px; font-family: 'Courier New', monospace; color: red; text-shadow: 0 0 5px red, 0 0 10px red; white-space: nowrap; }
+                    </style>
+                </head>
+                <body>
+                    <marquee behavior="scroll" direction="left" scrollamount="${scrollSpeed}">
+                        <span class="led-text">${text}</span>
+                    </marquee>
+                </body>
+                </html>
+            `;
+        }
+
+        function speakText() {
+            const message = document.getElementById("textInput").value.trim();
+            if (message) {
+                let speech = new SpeechSynthesisUtterance(message);
+                speech.lang = document.getElementById("languageSelect").value;
+                window.speechSynthesis.speak(speech);
+            } else {
+                alert("Please enter a message first.");
+            }
+        }
+
+        function stopSpeech() {
+            window.speechSynthesis.cancel();
+        }
+
+        function startVoiceRecognition() {
+            const recognition = new (window.SpeechRecognition || window.webkitSpeechRecognition)();
+            recognition.lang = document.getElementById("languageSelect").value;
+            recognition.start();
+            recognition.onresult = (event) => {
+                document.getElementById("textInput").value = event.results[0][0].transcript;
+            };
+            recognition.onerror = () => {
+                alert("Voice recognition failed. Please try again.");
+            };
+        }
+
+        function translateText() {
+            alert("Translation feature coming soon!");
+        }
+
+        function clearMessage() {
+            document.getElementById("textInput").value = "";
+        }
+
+        function triggerSOS() {
+            document.getElementById("textInput").value = "HELP! SOS!";
+
+            if ("geolocation" in navigator) {
+                navigator.geolocation.getCurrentPosition((position) => {
+                    const lat = position.coords.latitude;
+                    const lon = position.coords.longitude;
+                    alert(`SOS Activated! Location: https://www.google.com/maps?q=${lat},${lon}`);
+                }, () => {
+                    alert("Unable to fetch location. Please check GPS settings.");
+                });
+            } else {
+                alert("Geolocation is not supported by your browser.");
+            }
+        }
+    </script>
+</body>
+</html> -->

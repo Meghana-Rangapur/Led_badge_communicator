@@ -1,0 +1,104 @@
+/* Modern UI with Glassmorphism */
+body {
+    font-family: 'Poppins', sans-serif;
+    background-color:  #C4D9FF;
+    color: white;
+    text-align: center;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100vh;
+    margin: 0;
+}
+
+.container {
+    width: 90%;
+    max-width: 600px;
+    background: #e3f2fd;
+    backdrop-filter: blur(10px);
+    padding: 30px;
+    border-radius: 15px;
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.3);
+    text-align: center;
+}
+
+/* Title */
+h1 {
+    font-size: 24px;
+    font-weight: bold;
+    margin-bottom: 20px;
+    color: #C5BAFF;
+    text-shadow: 0 0 2px #e9e9e9, 0 0 10px #e9e9e9, 0 0 15px #e9e9e9;
+}
+
+/* Language Dropdown */
+.language-selector {
+    margin-bottom: 15px;
+    color:black;
+}
+
+select {
+    width: 100%;
+    padding: 10px;
+    font-size: 16px;
+    border: none;
+    border-radius: 10px;
+    background: rgba(255, 255, 255, 0.3);
+    color: rgb(245, 187, 248);
+    outline: none;
+}
+
+/* Text Input Box */
+textarea {
+    width: 90%;
+    height: 150px;
+    padding: 15px;
+    border-radius: 10px;
+    background: rgba(0, 0, 0, 0.3);
+    color: white;
+    font-size: 18px;
+    font-weight: bold;
+    border: none;
+    outline: none;
+    resize: none;
+}
+
+/* Buttons */
+.buttons {
+    margin-top: 20px;
+}
+
+button {
+    width: 100%;
+    padding: 12px;
+    margin: 10px 0;
+    border: none;
+    border-radius: 10px;
+    font-size: 16px;
+    font-weight: bold;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 10px;
+    transition: 0.3s;
+}
+
+#speakBtn {
+    background: #28a745;
+    color: white;
+}
+
+#stopBtn {
+    background: #dc3545;
+    color: white;
+}
+
+#clearBtn {
+    background: #ffc107;
+    color: black;
+}
+
+button:hover {
+    opacity: 0.8;
+}

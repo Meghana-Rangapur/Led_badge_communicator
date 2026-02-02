@@ -1,0 +1,39 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Text to Speech</title>
+    <link rel="stylesheet" href="tts.css">
+    <script src="https://kit.fontawesome.com/a076d05399.js" crossorigin="anonymous"></script>
+</head>
+<body>
+    <div class="container">
+        <h1>🗣️ Text to Speech Converter</h1>
+
+        <div class="language-selector">
+            <label for="languageSelect">🌍 Language:</label>
+            <select id="languageSelect">
+                <option value="en-US">🇺🇸 English (US)</option>
+                <option value="en-GB">🇬🇧 English (UK)</option>
+                <option value="es-ES">🇪🇸 Spanish</option>
+                <option value="fr-FR">🇫🇷 French</option>
+                <option value="de-DE">🇩🇪 German</option>
+                <option value="hi-IN">🇮🇳 Hindi</option>
+                <option value="zh-CN">🇨🇳 Chinese</option>
+                <option value="ja-JP">🇯🇵 Japanese</option>
+            </select>
+        </div>
+
+        <textarea id="textInput" placeholder="Type your text here..."></textarea>
+
+        <div class="buttons">
+            <button id="speakBtn"><i class="fas fa-play"></i> Speak</button>
+            <button id="stopBtn"><i class="fas fa-stop-circle"></i> Stop</button>
+            <button id="clearBtn"><i class="fas fa-trash-alt"></i> Clear</button>
+        </div>
+    </div>
+
+    <script src="tts.js"></script>
+</body>
+</html>

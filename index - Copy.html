@@ -1,0 +1,179 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>LED Badge Communicator</title>
+    <link rel="stylesheet" href="styles.css">
+    <script defer src="script.js"></script>
+    <style>
+        body {
+            font-family: 'Poppins', sans-serif;
+            background-color: #121212;
+            color: white;
+            text-align: center;
+            margin: 0;
+            padding: 0;
+        }
+        .container {
+            max-width: 800px;
+            margin: 50px auto;
+            background: #1e1e1e;
+            padding: 30px;
+            border-radius: 15px;
+            box-shadow: 0 0 20px rgba(255, 255, 255, 0.1);
+        }
+        h1 {
+            font-size: 28px;
+            color: #ff0000;
+        }
+        .button-container {
+            display: flex;
+            justify-content: space-around;
+            flex-wrap: wrap;
+            margin-top: 20px;
+        }
+        .button-card {
+            background: #282828;
+            padding: 15px;
+            border-radius: 10px;
+            text-align: center;
+            transition: transform 0.3s, box-shadow 0.3s;
+            cursor: pointer;
+            flex: 1;
+            margin: 10px;
+            min-width: 150px;
+        }
+        .button-card:hover {
+            transform: scale(1.1);
+            box-shadow: 0 0 15px rgba(255, 255, 255, 0.2);
+        }
+        button {
+            background: #3498db;
+            color: white;
+            font-size: 18px;
+            padding: 12px 20px;
+            border: none;
+            border-radius: 5px;
+            font-weight: bold;
+            cursor: pointer;
+            transition: 0.3s;
+        }
+        button:hover {
+            background: #2980b9;
+        }
+        video {
+            width: 100%;
+            border-radius: 10px;
+            margin-top: 10px;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>LED Badge Communicator</h1>
+        <input type="text" id="textInput" placeholder="Enter your message...">
+        <div class="button-container">
+            <div class="button-card" onclick="openLedDisplay()">
+                <button>Show on LED</button>
+            </div>
+            <div class="button-card" onclick="speakText()">
+                <button>Speak</button>
+            </div>
+            <div class="button-card" onclick="startVoiceRecognition()">
+                <button>Voice Input</button>
+            </div>
+            <div class="button-card" onclick="startGestureRecognition()">
+                <button>Gesture Input</button>
+            </div>
+            <div class="button-card">
+                <select id="languageSelect">
+                    <option value="en">English</option>
+                    <option value="es">Spanish</option>
+                    <option value="fr">French</option>
+                    <option value="de">German</option>
+                </select>
+                <button onclick="translateText()">Translate</button>
+            </div>
+        </div>
+        <video id="gestureVideo" autoplay></video>
+    </div>
+
+    <script>
+        function openLedDisplay() {
+            const text = document.getElementById("textInput").value || "Welcome!";
+            const ledWindow = window.open("", "LED Display", "width=800,height=200");
+            ledWindow.document.write(`
+                <html>
+                <head>
+                    <title>LED Display</title>
+                    <style>
+                        body {
+                            background-color: black;
+                            display: flex;
+                            align-items: center;
+                            justify-content: center;
+                            height: 100vh;
+                            overflow: hidden;
+                        }
+                        .led-text {
+                            font-size: 50px;
+                            font-family: 'Courier New', monospace;
+                            color: red;
+                            letter-spacing: 4px;
+                            text-shadow: 0 0 5px red, 0 0 10px red, 0 0 15px red;
+                            white-space: nowrap;
+                            display: inline-block;
+                            animation: scrollText 15s linear infinite;
+                        }
+                        @keyframes scrollText {
+                            from { transform: translateX(100%); }
+                            to { transform: translateX(-100%); }
+                        }
+                    </style>
+                </head>
+                <body>
+                    <div class="led-text">${text}</div>
+                </body>
+                </html>
+            `);
+        }
+
+        function speakText() {
+            const text = document.getElementById("textInput").value;
+            const speech = new SpeechSynthesisUtterance(text);
+            window.speechSynthesis.speak(speech);
+        }
+
+        function startVoiceRecognition() {
+            const recognition = new (window.SpeechRecognition || window.webkitSpeechRecognition)();
+            recognition.onresult = function(event) {
+                document.getElementById("textInput").value = event.results[0][0].transcript;
+            };
+            recognition.start();
+        }
+
+        function translateText() {
+            const text = document.getElementById("textInput").value;
+            const language = document.getElementById("languageSelect").value;
+            fetch(`https://api.mymemory.translated.net/get?q=${text}&langpair=en|${language}`)
+                .then(response => response.json())
+                .then(data => {
+                    document.getElementById("textInput").value = data.responseData.translatedText;
+                })
+                .catch(error => console.error("Translation Error:", error));
+        }
+
+        function startGestureRecognition() {
+            const video = document.getElementById('gestureVideo');
+            navigator.mediaDevices.getUserMedia({ video: true })
+                .then((stream) => {
+                    video.srcObject = stream;
+                })
+                .catch((err) => {
+                    console.error("Error accessing webcam:", err);
+                });
+        }
+    </script>
+</body>
+</html>
